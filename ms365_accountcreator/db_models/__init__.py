@@ -33,6 +33,17 @@ def create_db_function():
     APP_LOGGER.info('Database created.')
 
 
+from sqlalchemy import inspect
+
+with APP.app_context():
+    inspector = inspect(DB.engine)
+    if 'RegisteredEmailAddress' not in inspector.get_table_names():
+        APP_LOGGER.info('Database tables not found, creating them now...')
+        create_db_function()
+    else:
+        APP_LOGGER.info('Database tables already exist.')
+
+
 @APP.cli.command('drop_db')
 def drop_db():
     """Drop all db tables."""
